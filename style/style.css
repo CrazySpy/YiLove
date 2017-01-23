@@ -1,0 +1,120 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 2017-1-22, 17:34:58
+    Author     : jiangxiwen
+*/
+body{
+    background-color: skyblue;
+}
+body > div{
+    width:50%;
+    text-align:center;
+    margin:0px auto;
+}
+/*submit area style start*/
+#submitArea{
+    border-radius:2px;
+    height:30%;
+    background-color:white; 
+    text-align:center;
+    margin:5 auto;
+}
+
+#submitArea_submit{
+    text-align: center;
+    margin:0 auto;
+    background-color: orange; 
+    width :30%;
+    height:20%;
+    font-size: x-large;
+    color:white;
+    cursor:hand;
+}
+#submitArea_submit:hover{
+    background-color: #ff6513;
+}
+
+#submitArea_targetName
+{
+    border-width: 1px;
+    border-color: skyblue;
+}
+#submitArea_context{
+    border-radius:2px;
+    width: 90%;
+    height: 50%;
+    border-color: skyblue;
+}
+/*submit area style end*/
+
+/*list area style start*/
+#listArea > div{
+    border-radius:2px;
+    width:100%;
+    background-color:white; 
+    text-align:left;
+    margin:5px auto;
+}
+
+.loveTime{
+    margin-right: 10%;
+    text-align: right;
+    font-size: 80%;
+}
+
+.loveTarget{
+    font-family: PilGi;
+    margin-left: 5%;
+    text-align: left;
+    font-size: 20px;
+}
+
+.loveWords{
+    font-family: PilGi;
+    margin-left:10%;
+    text-align: left;
+    font-size: 15px;
+}
+
+.loveUser{
+    font-family: PilGi;
+    padding-right: 30%;
+    text-align: right;
+    font-size: 16px;
+}
+.loveItem_OthersOperation{
+    display: inline;
+    margin-left:5px;
+    cursor:hand;
+}
+/*list area style end*/
+
+/*loading bar style start*/
+#loadingBar{
+    border-radius:2px;
+    background-color: gray;
+    margin:5 auto;
+    font-size: 20px;
+}
+#loadingBar img{
+    height : 20px;
+    width:20px;
+}
+/*loading bar style end*/
+
+#message{
+    border-radius:10px;
+    position:absolute;
+    width:20%;
+    left: 40%;
+    top:30%;
+    font-size: large;
+}
+#message img{
+    height:32px;
+    width:32px;
+}
