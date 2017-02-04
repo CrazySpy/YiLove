@@ -2,9 +2,9 @@
 class Yiban
 {
     private $access_token;
-    private $returnInfo;
-    private $exceptionMessage;
-    private $exceptionCode;
+	private $returnInfo;
+//    private $exceptionMessage;
+//    private $exceptionCode;
     function __construct($at) 
     {
         $this->access_token = $at;
@@ -34,7 +34,23 @@ class Yiban
         //if($this->returnInfo["status"] == "error")
         //        throw new Exception ($this->returnInfo["info"]["msgCN"],"yiban_" . $this->returnInfo["info"]["code"]);
     }
-    
+	public function GetReturnJSON()
+	{
+		$rtnJSON = json_decode($this->returnInfo,true);
+        $status = $rtnJSON["status"];
+        
+        if($status != "success")
+		{
+			$errorCode =  "1" . $rtnJSON["info"]["code"][1] . $rtnJSON["info"]["code"][2] . $rtnJSON["info"]["code"][3];
+			$errorMessage = $rtnJSON["info"]["msgCN"];
+			return ConstructReturnJSON("error",$errorCode,$errorMessage);
+		}
+		else
+		{
+			return ConstructReturnJSON("success");
+		}
+	}
+	/*
     public function GetExceptionCode()
     {
         return $this->exceptionCode;
@@ -45,7 +61,7 @@ class Yiban
         return $this->exceptionMessage;
     }
     
-    public function CheckStatus()
+    public function GetStatus()
     {
         $rtnJSON = json_decode($this->returnInfo,true);
         $status = $rtnJSON["status"];
@@ -56,7 +72,10 @@ class Yiban
             $this->exceptionCode = "1" . $rtnJSON["info"]["code"][1] . $rtnJSON["info"]["code"][2] . $rtnJSON["info"]["code"][3];
         }
         return $status;
-    }
+	}
+	 */
+
+	
     public function GetUserID()
     {
         $ID = json_decode($this->returnInfo,true)["info"]["yb_userid"];
