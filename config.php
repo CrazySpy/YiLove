@@ -7,7 +7,7 @@ $needCheck = false;//发布表白信息是否需要审核
 $db_ipAddr   = "localhost";
 $db_port     = "3306";
 $db_username = "root";
-$db_password = "";
+$db_password = "it's a secret";
 $db_name     = "YiLove";
 
 

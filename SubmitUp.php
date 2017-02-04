@@ -39,7 +39,7 @@ function isUpped($dbc,$itemID,$userID)
 {
 	$columns = Array("ItemID","UserID");
 	$data	 = Array($itemID,$userID);
-	$rtn	 = $dbc->SQLCount("Up",$columns,$data);
+	$rtn	 = $dbc->SQLCount("up",$columns,$data);
 	if($dbc->GetLastStatus() === "success")
 	{
 		return $rtn["info"]["message"];

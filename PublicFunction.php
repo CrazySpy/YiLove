@@ -12,9 +12,8 @@ function TranslateArr($arr,$FrontDelimiter = "'",$LastDelimiter = "',",$DeleteEn
 	{
 		$result = substr($result,0,strlen($result)-$DeleteEndChar); 
 	}
-	return $result;	
+	return $result;
 }
-
 function ConstructReturnJSON($status = "success",$code = null,$message = null,$extra = null)
 {
 	if(is_array($message) || is_object($message))
@@ -42,9 +41,8 @@ function ConstructReturnJSON($status = "success",$code = null,$message = null,$e
 	{
 		$json .= '}}';
 	}
-	return json_decode($json,true);
+	return $json;
 }
-
 function toSQLSafeString($string)
 {
 	$string = str_ireplace('"', '\"',$string);
@@ -54,21 +52,5 @@ function toSQLSafeString($string)
 	$string = str_ireplace(";", "\;",$string);
 	$string = str_ireplace(".", "\.",$string);
 	return $string;
-}
-
-function CreateUniqueID()
-{
-	$id = uniqid(true,true);
-	$id = str_ireplace(".", "_", $id);
-	return $id;
-}
-
-function isYibanLogin()
-{
-	if(!isset($_SESSION["isLogin"]) || $_SESSION["isLogin"] == "false")
-	{
-		return false;
-	}
-	return true;
 }
 ?>

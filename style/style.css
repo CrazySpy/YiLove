@@ -15,50 +15,24 @@ body > div{
     text-align:center;
     margin:0px auto;
 }
-
-.handCursor{
-	cursor:hand;
-}
-.inline{
-	display:inline;
-}
-.littleMargin{
-	margin:5px;
-}
-.noMargin{
-	margin:0;
-}
-.autoMargin{
-	margin:auto;
-}
-.littlePadding{
-	padding:5px;
-}
-.noPadding{
-	padding:0px;
-}
-.centerAligin{
-	text-align:center;
-}
-.littleBorderRadius{
-	border-radius:5px;
-}
-.wideTextArea{
-	width:90%;
-}
-.autoWidth{
-	width:auto;
-}
 /*submit area style start*/
 #submitArea{
+    border-radius:2px;
+    height:30%;
     background-color:white; 
+    text-align:center;
+    margin:5 auto;
 }
 
 #submitArea_submit{
+    text-align: center;
+    margin:0 auto;
     background-color: orange; 
     width :30%;
+    height:20%;
     font-size: x-large;
     color:white;
+    cursor:hand;
 }
 #submitArea_submit:hover{
     background-color: #ff6513;
@@ -70,7 +44,9 @@ body > div{
     border-color: skyblue;
 }
 #submitArea_context{
-    height: 180px;
+    border-radius:2px;
+    width: 90%;
+    height: 50%;
     border-color: skyblue;
 }
 /*submit area style end*/
@@ -80,11 +56,12 @@ body > div{
     border-radius:2px;
     width:100%;
     background-color:white; 
+    text-align:left;
     margin:5px auto;
 }
 
 .loveTime{
-    margin-right: 5px;
+    margin-right: 10%;
     text-align: right;
     font-size: 80%;
 }
@@ -109,11 +86,10 @@ body > div{
     text-align: right;
     font-size: 16px;
 }
-.loveComment{
-	height:100px;
-}
-.loveComment_Submit{
-	width:40px;
+.loveItem_OthersOperation{
+    display: inline;
+    margin-left:5px;
+    cursor:hand;
 }
 /*list area style end*/
 
@@ -130,15 +106,15 @@ body > div{
 }
 /*loading bar style end*/
 
-.message{
+#message{
     border-radius:10px;
-    position:fixed;
+    position:absolute;
     width:20%;
     left: 40%;
     top:30%;
     font-size: large;
 }
-.message img{
+#message img{
     height:32px;
     width:32px;
 }
