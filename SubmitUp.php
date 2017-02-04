@@ -23,7 +23,15 @@ function CheckItemID($dbc,$itemID)
 {
 	$columns = Array("ItemID");
 	$data	 = Array($itemID);
-	return $dbc->SQLCount("publish",$columns,$data)["info"]["message"];
+	$rtn	 = $dbc->SQLCount("publish",$columns,$data);	
+	if($dbc->GetLastStatus() === "success")
+	{
+		return $rtn["info"]["message"];
+	}
+	else
+	{
+		exit(json_encode($rtn));
+	}
 }
 
 //Check whether the user has upped it
@@ -31,7 +39,15 @@ function isUpped($dbc,$itemID,$userID)
 {
 	$columns = Array("ItemID","UserID");
 	$data	 = Array($itemID,$userID);
-	return $dbc->SQLCount("Up",$columns,$data)["info"]["message"];
+	$rtn	 = $dbc->SQLCount("Up",$columns,$data);
+	if($dbc->GetLastStatus() === "success")
+	{
+		return $rtn["info"]["message"];
+	}
+	else
+	{
+		exit(json_encode($rtn));
+	}
 }
 
 if(!CheckItemID($dbc_submitUp,$itemID))
