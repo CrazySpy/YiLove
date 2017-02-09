@@ -1,18 +1,67 @@
 <?php
 include_once("config.php");
-$dbc = mysqli_connect($db_ipAddr, $db_username, $db_password, $db_name, $db_port) or exit("数据库配置有误，请查证");
+$dbc = mysqli_connect($db_ipAddr, $db_username, $db_password, $db_name, $db_port) or die("数据库配置有误，请查证");
 
-$create_AnonymousInfo = "CREATE TABLE `anonymousInfo` (`id` VARCHAR(24) NOT NULL,`SubmitUser` VARCHAR(30) NOT NULL,`UserSchool` VARCHAR(30) NOT NULL);";
-$create_Publish        = "CREATE TABLE `publish` (`id` VARCHAR(24) NOT NULL,`SubmitTime` DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,`SubmitUser` VARCHAR(30) NOT NULL,`UserSchool` VARCHAR(30) NOT NULL,`Context` TEXT NOT NULL,`TargetName` VARCHAR(30) NOT NULL,UserID INT NOT NULL,isAnonymous TINYINT DEFAULT 1);";
-$create_Waiting        = "CREATE TABLE `waiting` (`id` VARCHAR(24) NOT NULL,`SubmitTime` DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,`SubmitUser` VARCHAR(30) NOT NULL,`UserSchool` VARCHAR(30) NOT NULL,`Context` TEXT NOT NULL,`TargetName` VARCHAR(30) NOT NULL,UserID INT NOT NULL,isAnonymous TINYINT DEFAULT 1);";
-$addKey_AnonymousInfo = "Alter table `anonymousInfo` add primary key(`id`);";
-$addKey_Publish = "Alter table `publish` add primary key(`id`);";
-$addKey_Waiting = "Alter table `waiting` add primary key(`id`);";
-mysqli_query($dbc, $create_AnonymousInfo);
+
+$create_SchoolInfo = "CREATE TABLE `SchoolInfo` (" . 
+	"`SchoolID` INT PRIMARY KEY NOT NULL," .
+	"`SchoolName` VARCHAR(30) NOT NULL" . 
+	");";
+
+$create_UserInfo = "CREATE TABLE `UserInfo` (" . 
+	"`UserID` INT PRIMARY KEY NOT NULL," .
+	"`RealName` VARCHAR(30)," .
+	"`UserName` VARCHAR(50) NOT NULL, " . 
+	"`Sex` CHAR(1)," .
+	"`NickName` VARCHAR(50) NOT NULL," . 
+	"`SchoolID` INT,FOREIGN KEY(`SchoolID`) REFERENCES `SchoolInfo`(`SchoolID`)" . 
+	");";
+
+
+$create_Publish = "CREATE TABLE `Publish` (" .
+	"`ItemID` INT(8) UNSIGNED ZEROFILL PRIMARY KEY AUTO_INCREMENT NOT NULL," .
+	"`UserID` INT NOT NULL,FOREIGN KEY(`UserID`) REFERENCES `UserInfo`(`UserID`)," .
+	"`Context` TEXT NOT NULL," .
+	"`TargetName` TEXT NOT NULL," .
+	"`isAnonymous` BOOLEAN DEFAULT 1 NOT NULL," .
+	"`CommentCount` INT DEFAULT 0," .
+	"`UpCount` INT DEFAULT 0," .
+	"`SubmitTime` DATETIME DEFAULT CURRENT_TIMESTAMP" .
+	");";
+
+$create_Waiting = "CREATE TABLE `Waiting` (" .
+	"`ItemID` INT(8) UNSIGNED ZEROFILL PRIMARY KEY AUTO_INCREMENT NOT NULL," .
+	"`UserID` INT NOT NULL,FOREIGN KEY(`UserID`) REFERENCES `UserInfo`(`UserID`)," .
+	"`Context` TEXT NOT NULL," .
+	"`TargetName` TEXT NOT NULL," .
+	"`isAnonymous` BOOLEAN DEFAULT 1 NOT NULL," .
+	"`CommentsCount` INT DEFAULT 0," .
+	"`UpCount` INT DEFAULT 0," .
+	"`SubmitTime` DATETIME DEFAULT CURRENT_TIMESTAMP" .
+	");";
+
+$create_Comment = "CREATE TABLE `Comment` (".
+	"`CommentID` INT(8) UNSIGNED ZEROFILL PRIMARY KEY AUTO_INCREMENT NOT NULL,".
+	"`UserID` INT NOT NULL,FOREIGN KEY(`UserID`) REFERENCES `UserInfo`(`UserID`),".
+	"`ItemID` INT(8) UNSIGNED ZEROFILL NOT NULL,FOREIGN KEY(`ItemID`) REFERENCES `Publish`(`ItemID`),".
+	"`Context` TEXT NOT NULL,".
+	"`isAnonymous` BOOLEAN DEFAULT 1 NOT NULL," .
+	"`SubmitTime` DATETIME DEFAULT CURRENT_TIMESTAMP" .
+	");";
+
+$create_Up = "CREATE TABLE `Up` (".
+	"`UpID` INT(8) UNSIGNED ZEROFILL PRIMARY KEY AUTO_INCREMENT NOT NULL,".
+	"`UserID` INT NOT NULL,FOREIGN KEY(`UserID`) REFERENCES `UserInfo`(`UserID`),".
+	"`ItemID` INT(8) UNSIGNED ZEROFILL NOT NULL,FOREIGN KEY(`ItemID`) REFERENCES `Publish`(`ItemID`),".
+	"`SubmitTime` DATETIME DEFAULT CURRENT_TIMESTAMP" .
+	");";
+
+mysqli_query($dbc, $create_SchoolInfo);
+mysqli_query($dbc, $create_UserInfo);
 mysqli_query($dbc, $create_Publish);
 mysqli_query($dbc, $create_Waiting);
-mysqli_query($dbc, $addKey_AnonymousInfo);
-mysqli_query($dbc, $addKey_Publish);
-mysqli_query($dbc, $addKey_Waiting);
+mysqli_query($dbc, $create_Comment);
+mysqli_query($dbc, $create_Up);
+
 mysqli_close($dbc);
 ?>

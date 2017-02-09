@@ -1,7 +1,9 @@
 <?php
 include_once($_SERVER["DOCUMENT_ROOT"] . "/class/SQL.class.php");
-$count = new SQL;
-$result = $count->SQLCount("publish",1,1);
+$dbc_getItemCount = new SQL;
+
+$where_getItemCount = Array();//="*"
+$rtn = $dbc_getItemCount->SQLCount("`Publish`",$where_getItemCount);
 //var_dump($result);
-exit(json_encode($result));
+exit(json_encode($rtn));
 ?>

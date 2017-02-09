@@ -13,7 +13,20 @@ else
 }
 
 $dbc_getItems = new SQL;
-$columns = Array("ItemID","SubmitTime","SubmitUser","TargetName","Context","UpNum","CommentNum");
-$rtn = $dbc_getItems->SQLSelect($columns, "publish",1,1,($page - 1) * $itemsPerPage,$itemsPerPage,"ORDER BY `SubmitTime` DESC",PDO::FETCH_ASSOC);
+
+$columns_getItems = Array();//="*"
+$where_getItems = Array();//="*"
+
+$rtn = $dbc_getItems->SQLSelect($columns_getItems,"`Publish`",$where_getItems,($page - 1) * $itemsPerPage,$itemsPerPage,null,"ORDER BY `SubmitTime` DESC",PDO::FETCH_ASSOC);
+if($rtn["status"] === "success")
+{
+	foreach($rtn["info"]["message"] as $element)
+	{
+		if($element["isAnonymous"] == 1)
+		{
+			$element["UserID"] = "";
+		}
+	}
+}
 exit(json_encode($rtn));
 ?>

@@ -17,7 +17,7 @@ function ShowMessage(type,message)
 	}
 	else
 		return;
-	var node = '<div class="message" style="display:none;z-index:auto;background-color:' + backgroundColor + '"><img src="' + iconURL + '" />' + message +'</div>';
+	var node = '<div class="message fixedPosition" style="display:none;z-index:auto;background-color:' + backgroundColor + '"><img src="' + iconURL + '" />' + message +'</div>';
 	$message = $(node);
 	$("#message").html($message);
 	$message.fadeIn(2000,function(){
@@ -262,9 +262,12 @@ function Submit()
 					var item = rtnData["info"]["message"][0];
 					var node = ConstructItemNode(item);
 					$(node).prependTo("#listArea").hide().slideDown("slow");
-					isSending = false;
-					$("#submitArea_submit").html("发布");
+					$("#submitArea_context").val("");
+					$("#submitArea_targetName").val("");
 				}
+				isSending = false;
+				$("#submitArea_submit").html("发布");
+
 			},
 			error:function(XMLHttpRequest, textStatus, errorThrown){
 				if(textStatus == "parseerror")
@@ -309,7 +312,37 @@ function SubmitUp()
 		});
 	});
 }
+function isCookieAvailable()
+{
+	if(window.navigator.cookieEnabled)  
+		return true;  
+	else
+		return false;
+}
 
+function GetCookie(cookieName)
+{
+	var arr = document.cookie.match(new RegExp("(^| )"+cookieName+"=([^;]*)(;|$)"));
+	if(arr != null)
+		return unescape(arr[2]); 
+	else
+  	 return null;
+}
+
+function SetLoginInfo()
+{
+	if(isCookieAvailable())
+	{
+		if(GetCookie("nickName") != null)
+		{
+			$("#loginInfo").html("欢迎您," + GetCookie("nickName") + '  ' + '<a href="logout.php">退出登录</a>');
+		}
+	}
+	else
+	{
+		ShowMessage("error","您的浏览器未开启cookie，这可能会影响体验！");
+	}
+}
 
 
 $(document).ready(function(){
@@ -331,4 +364,5 @@ $(document).ready(function(){
 	SetItemComments();
 	SubmitComment();
 	SubmitUp();
+	SetLoginInfo();
 });

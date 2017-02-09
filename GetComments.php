@@ -10,7 +10,20 @@ else
 {
 	exit(json_encode(ConstructReturnJSON("error","3001","有数据为非法空")));
 }
-$dbc_GetComments = new SQL;
-$columns = Array("CommentID","ItemID","Context","SubmitUser","SubmitTime");
-exit(json_encode($dbc_GetComments->SQLSelect($columns,"comment","ItemID",$itemID,1,-1,"ORDER BY `SubmitTime` DESC",PDO::FETCH_ASSOC)));
+$dbc_getComments = new SQL;
+
+$columns_getComments = Array(); //="*"
+$where_getComments	 = Array(); //="*"
+$rtn = $dbc_getComments->SQLSelect($columns_getBack,"`Comment`",$where_getBack,1,-1,NULL,"ORDER BY SubmitTime DESC");
+if($rtn["status"] === "success")
+{
+	foreach($rtn["info"]["message"] as $element)
+	{
+		if($element["isAnonymous"] == 1)
+		{
+			$element["UserID"] = "";
+		}
+	}
+}
+exit(json_encode($rtn));
 ?>

@@ -9,39 +9,68 @@ if(!isYibanLogin())
 	exit(json_encode(ConstructReturnJSON("error",3003,"未登录到易班")));
 }
 
-//$yiban = new Yiban($_SESSION["access_token"]);
-//$rtn = $yiban->GetReturnJSON();
-//if($rtn["status"] != "success")
-//{
-//	exit(json_encode($rtn));
-//}
-//$submitUser = $rtn["info"]["message"];
-
 if(empty($_POST["context"]) || empty($_POST["itemID"]))
 {
 	exit(json_encode(ConstructReturnJSON("error","3001","有数据为非法空")));
 }
 
-$comment = toSQLSafeString($_POST["context"]);
-$itemID = toSQLSafeString($_POST["itemID"]);
+$comment	 = toSQLSafeString($_POST["context"]);
+$itemID		 = toSQLSafeString($_POST["itemID"]);
+$userID		 = $_SESSION["userID"];
 
-$dbc_SubmitComment = new SQL;
-$rtn = $dbc_SubmitComment->SQLSelect("ItemID","publish","ItemID",$itemID);
-if($dbc_SubmitComment->GetLastStatus() === "success")
+if(!isset($_POST["isAnonymous"]) || $_POST["isAnonymous"] != "off")
+{$isAnonymous = 1;}
+else
+{$isAnonymous = 0;}
+
+$dbc_submitComment = new SQL;
+
+//Check whether the item is available(in table `Publish`)
+$columns_isItemAvailable = Array();
+$where_isItemAvailable = Array(
+	"`ItemID`" => $itemID
+);
+$rtn = $dbc_submitComment->SQLSelect($columns_isItemAvailable ,"`Publish`",$where_isItemAvailable);
+
+if($dbc_submitComment->GetLastStatus() === "success")
 {
 	if($rtn["info"]["message"][0]["ItemID"] === $itemID)
 	{
-		$commentID = CreateUniqueID();
-		$columns = Array("CommentID","ItemID","Context","SubmitUser","UserID");
-		$data    = Array($commentID,$itemID,$comment,$_SESSION["realName"],$_SESSION["userID"]);
-		$rtn = $dbc_SubmitComment->SQLInsert("comment",$columns,$data);
-		if($dbc_SubmitComment->GetLastStatus() === "success")
+		//insert comment into table `Comment`
+		$submitComment = Array(
+			"`ItemID`"		=> $itemID,
+			"`Context`"		=> $comment,
+			"`UserID`"		=> $userID,
+			"`isAnonymous`" => $isAnonymous
+		);
+		$rtn = $dbc_submitComment->SQLInsert("`Comment`",$submitComment);
+		if($dbc_submitComment->GetLastStatus() === "success")
 		{
-			$rtn = $dbc_SubmitComment->SQLUpdate("publish","CommentNum","`CommentNum`+1","ItemID",$itemID);
-			if($dbc_SubmitComment->GetLastStatus() === "success")
+			//The comment count in `Publish` table +1
+			$data_commentPlus = Array(
+				"`CommentsCount`" => "`CommentsCount`+1"
+			);
+			$where_commentPlus = Array(
+				"`ItemID`" => $itemID
+			);
+			$rtn = $dbc_submitComment->SQLUpdate("`Publish`",$data_commentPlus,$where_commentPlus);
+			if($dbc_submitComment->GetLastStatus() === "success")
 			{
-				$columns = Array("CommentID","ItemID","Context","SubmitUser","SubmitTime");
-				$rtn = $dbc_SubmitComment->SQLSelect($columns,"comment","CommentID",$commentID);
+				//Get the comment back for rewrite
+				$columns_getBack = Array(); //="*"
+				$where_getBack = Array(
+					"`ItemID`" => $itemID,
+					"`UserID`" => $userID
+				);
+				$rtn = $dbc_submitComment->SQLSelect($columns_getBack,"`Comment`",$where_getBack,0,1,NULL,"ORDER BY SubmitTime DESC");
+				if($dbc_submitComment->GetLastStatus() === "success")
+				{
+					//Hide the user information if the `isAnonymoue` == 1
+					if($rtn["info"]["message"]["isAnonymous"] == 1)
+					{
+						$rtn["info"]["message"]["UserID"] = "";
+					}
+				}
 			}
 		}
 	}

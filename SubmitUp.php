@@ -21,9 +21,10 @@ $dbc_submitUp = new SQL;
 //Check whether the ItemID is available
 function CheckItemID($dbc,$itemID)
 {
-	$columns = Array("ItemID");
-	$data	 = Array($itemID);
-	$rtn	 = $dbc->SQLCount("publish",$columns,$data);	
+	$checkItemID = Array(
+		"ItemID" => $itemID
+	);
+	$rtn = $dbc->SQLCount("Publish",$CheckItemID);	
 	if($dbc->GetLastStatus() === "success")
 	{
 		return $rtn["info"]["message"];
@@ -37,9 +38,11 @@ function CheckItemID($dbc,$itemID)
 //Check whether the user has upped it
 function isUpped($dbc,$itemID,$userID)
 {
-	$columns = Array("ItemID","UserID");
-	$data	 = Array($itemID,$userID);
-	$rtn	 = $dbc->SQLCount("up",$columns,$data);
+	$isUpped = Array(
+		"ItemID" => $itemID,
+		"UserID" => $userID
+	);
+	$rtn	 = $dbc->SQLCount("Up",$isUpped);
 	if($dbc->GetLastStatus() === "success")
 	{
 		return $rtn["info"]["message"];
@@ -61,12 +64,20 @@ if(isUpped($dbc_submitUp,$itemID,$_SESSION["userID"]))
 }
 if(!isset($rtn))
 {
-	$columns = Array("UserID","ItemID");
-	$data	 = Array($_SESSION["userID"],$itemID);
-	$rtn	 = $dbc_submitUp->SQLInsert("up",$columns,$data);
+	$up = Array(
+		"UserID" => $_SESSION["userID"],
+		"ItemID" => $itemID
+	);
+	$rtn	 = $dbc_submitUp->SQLInsert("Up",$up);
 	if($dbc_submitUp->GetLastStatus() === "success")
 	{
-		$rtn = $dbc_submitUp->SQLUpdate("publish","UpNum","`UpNum`+1","ItemID",$itemID);
+		$data_upPlus = Array(
+			"UpCount" => "`UpCount`+1"
+		);
+		$where_upPlus = Array(
+			"ItemID" => $itemID
+		);
+		$rtn = $dbc_submitUp->SQLUpdate("Publish",$data_upPlus,$where_upPlus);
 	}
 }
 exit(json_encode($rtn));

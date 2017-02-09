@@ -49,6 +49,30 @@ body > div{
 .autoWidth{
 	width:auto;
 }
+.fixedPosition{
+	position:fixed;
+}
+.leftAlign{
+	float:left;
+}
+.rightAlign{
+	float:right;
+}
+
+/*head part style start*/
+#headBar{
+	left:0;
+	top:0;
+	width:100%;
+	height:50px;
+	background:LightPink;
+}
+
+#logo{
+	height:100%;
+}
+/*head part style end*/
+
 /*submit area style start*/
 #submitArea{
     background-color:white; 
@@ -132,7 +156,6 @@ body > div{
 
 .message{
     border-radius:10px;
-    position:fixed;
     width:20%;
     left: 40%;
     top:30%;
