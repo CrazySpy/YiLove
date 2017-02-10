@@ -23,6 +23,9 @@ if(!isset($_POST["isAnonymous"]) || $_POST["isAnonymous"] != "off")
 else
 {$isAnonymous = 0;}
 
+//The anonymous comment function is not available
+$isAnonymous = 0;
+
 $dbc_submitComment = new SQL;
 
 //Check whether the item is available(in table `Publish`)
@@ -48,7 +51,7 @@ if($dbc_submitComment->GetLastStatus() === "success")
 		{
 			//The comment count in `Publish` table +1
 			$data_commentPlus = Array(
-				"`CommentsCount`" => "`CommentsCount`+1"
+				"`CommentCount`" => "`CommentCount`+1"
 			);
 			$where_commentPlus = Array(
 				"`ItemID`" => $itemID
@@ -57,18 +60,34 @@ if($dbc_submitComment->GetLastStatus() === "success")
 			if($dbc_submitComment->GetLastStatus() === "success")
 			{
 				//Get the comment back for rewrite
-				$columns_getBack = Array(); //="*"
-				$where_getBack = Array(
-					"`ItemID`" => $itemID,
-					"`UserID`" => $userID
+				$columns_getBack = Array(
+					"Comment.ItemID",
+					"Comment.UserID",
+					"Comment.Context",
+					"Comment.isAnonymous",
+					"Comment.SubmitTime",
+					"UserInfo.UserName",
+					"UserInfo.NickName"
+				); 
+				$joinTable_getBack = Array(
+					"`UserInfo`"
 				);
-				$rtn = $dbc_submitComment->SQLSelect($columns_getBack,"`Comment`",$where_getBack,0,1,NULL,"ORDER BY SubmitTime DESC");
+				$on_getBack = Array(
+					"Comment.UserID = UserInfo.UserID"
+				);
+				$where_getBack = Array(
+					"Comment.ItemID" => $itemID,
+					"Comment.UserID" => $userID
+				);
+				$rtn = $dbc_submitComment->SQLInnerJoinSelect($columns_getBack,"`Comment`",$joinTable_getBack,$on_getBack,$where_getBack,0,1,"ORDER BY Comment.SubmitTime DESC");
 				if($dbc_submitComment->GetLastStatus() === "success")
 				{
 					//Hide the user information if the `isAnonymoue` == 1
-					if($rtn["info"]["message"]["isAnonymous"] == 1)
+					if($rtn["info"]["message"][0]["isAnonymous"] == 1)
 					{
-						$rtn["info"]["message"]["UserID"] = "";
+						$rtn["info"]["message"][0]["UserID"] = "";
+						$rtn["info"]["message"][0]["UserName"] = "";
+						$rtn["info"]["message"][0]["NickName"] = "";
 					}
 				}
 			}

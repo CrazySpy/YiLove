@@ -22,21 +22,6 @@ $userID				= $_SESSION["userID"];
 
 $dbc_submitItem = new SQL();
 
-function GetSubmitData($dbc,$itemID)
-{
-	$columns_GetItems = Array("`ItemID`",`UserID`,"Context","TargetName","`SubmitTime`","`SubmitUser`","`UpCount`","`CommentCount`");
-	$where_GetItems = Array(
-		"`ItemID`" => $itemID
-	);
-	//	var_dump($itemID);
-	$rtn = $dbc->SQLSelect($columns_GetItems,"`publish`",$where_GetItems);
-	if($rtn["info"]["message"]["isAnonymous"] == 1)
-	{
-		$rtn["info"]["message"]["UserID"] = ""; 
-	}
-	return $rtn;
-}
-
 $databaseName = "`Waiting`";
 if($GLOBALS["needCheck"] === false)
 {
@@ -58,50 +43,36 @@ $rtn = $dbc_submitItem->SQLInsert($databaseName,$submitItem);
 if($dbc_submitItem->GetLastStatus() === "success")
 {
 	//Get the comment to rewrite
-	$columns_getBack = Array(); //="*"
-	$where_getBack = Array(
-		"`UserID`" => $userID
+	$columns_getBack = Array(
+		"Publish.ItemID",
+		"Publish.UserID",
+		"Publish.Context",
+		"Publish.TargetName",
+		"Publish.isAnonymous",
+		"Publish.CommentCount",
+		"Publish.UpCount",
+		"Publish.SubmitTime",
+		"UserInfo.UserName",
+		"UserInfo.NickName"
 	);
-	$rtn = $dbc_submitItem->SQLSelect($columns_getBack,"`Publish`",$where_getBack,0,1,null,"ORDER BY SubmitTime DESC");
-	if($dbc_submitItem->GetLastStatus() === "success")
+	$joinTables_getBack = Array(
+		"`UserInfo`"
+	);
+	$on_getBack = Array(
+		"Publish.UserID=UserInfo.UserID"
+	);
+	$where_getBack = Array(
+		"Publish.UserID" => $userID
+	);
+	//	var_dump($itemID);
+	//	$rtn = $dbc->SQLSelect($columns_GetItems,"`Publish`",$where_GetItems);
+	$rtn = $dbc_submitItem->SQLInnerJoinSelect($columns_getBack,"`Publish`",$joinTables_getBack,$on_getBack,$where_getBack,0,1,"ORDER BY Publish.SubmitTime DESC");
+	if($rtn["info"]["message"][0]["isAnonymous"] == 1)
 	{
-		//Hide the user information if the `isAnonymoue` == 1
-		if($rtn["info"]["message"]["isAnonymous"] == 1)
-		{
-			$rtn["info"]["message"]["UserID"] = "";
-		}
-	}
-
-}
-/*
-if($isAnonymous === "on")
-{
-	$columns = array("ItemID","SubmitUser","UserSchool","Context","TargetName","UserID","isAnonymous");
-	$data    = array($itemID,$submitUser,$userSchool,$context,$targetName,$userID,0);
-	$rtn	 = $sql -> SQLInsert($databaseName,$columns,$data);
-	if($sql->GetLastStatus() === "success")
-	{
-		$rtn = GetSubmitData($sql,$itemID);
+		$rtn["info"]["message"][0]["UserID"] = "";
+		$rtn["info"]["message"][0]["UserName"] = "";
+		$rtn["info"]["message"][0]["NickName"] = "";
 	}
 }
-else
-{
-	$columns1 = array("ItemID","SubmitUser","UserSchool","Context","TargetName","UserID","isAnonymous");
-	$data1   = array($itemID,"匿名","隐藏学校",$context,$targetName,$userID,1);
-	$columns2 = array("ItemID","SubmitUser","UserSchool");
-	$data2 = array($itemID,$submitUser,$userSchool);
-
-	$rtn = $sql -> SQLInsert($databaseName,$columns1,$data1);
-
-	if($sql->GetLastStatus() === "success")
-	{
-		$rtn = $sql -> SQLInsert("anonymousInfo",$columns2,$data2);
-		if($sql->GetLastStatus() === "success")
-		{
-			$rtn = GetSubmitData($sql,$itemID);
-		}
-	}
-}
- */
 exit(json_encode($rtn));
 ?>

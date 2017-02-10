@@ -6,7 +6,7 @@ $dbc = mysqli_connect($db_ipAddr, $db_username, $db_password, $db_name, $db_port
 $create_SchoolInfo = "CREATE TABLE `SchoolInfo` (" . 
 	"`SchoolID` INT PRIMARY KEY NOT NULL," .
 	"`SchoolName` VARCHAR(30) NOT NULL" . 
-	");";
+	")ENGINE=InnoDB DEFAULT CHARSET=utf8;";
 
 $create_UserInfo = "CREATE TABLE `UserInfo` (" . 
 	"`UserID` INT PRIMARY KEY NOT NULL," .
@@ -15,7 +15,7 @@ $create_UserInfo = "CREATE TABLE `UserInfo` (" .
 	"`Sex` CHAR(1)," .
 	"`NickName` VARCHAR(50) NOT NULL," . 
 	"`SchoolID` INT,FOREIGN KEY(`SchoolID`) REFERENCES `SchoolInfo`(`SchoolID`)" . 
-	");";
+	")ENGINE=InnoDB DEFAULT CHARSET=utf8;";
 
 
 $create_Publish = "CREATE TABLE `Publish` (" .
@@ -27,7 +27,7 @@ $create_Publish = "CREATE TABLE `Publish` (" .
 	"`CommentCount` INT DEFAULT 0," .
 	"`UpCount` INT DEFAULT 0," .
 	"`SubmitTime` DATETIME DEFAULT CURRENT_TIMESTAMP" .
-	");";
+	")ENGINE=InnoDB DEFAULT CHARSET=utf8;";
 
 $create_Waiting = "CREATE TABLE `Waiting` (" .
 	"`ItemID` INT(8) UNSIGNED ZEROFILL PRIMARY KEY AUTO_INCREMENT NOT NULL," .
@@ -35,10 +35,10 @@ $create_Waiting = "CREATE TABLE `Waiting` (" .
 	"`Context` TEXT NOT NULL," .
 	"`TargetName` TEXT NOT NULL," .
 	"`isAnonymous` BOOLEAN DEFAULT 1 NOT NULL," .
-	"`CommentsCount` INT DEFAULT 0," .
+	"`CommentCount` INT DEFAULT 0," .
 	"`UpCount` INT DEFAULT 0," .
 	"`SubmitTime` DATETIME DEFAULT CURRENT_TIMESTAMP" .
-	");";
+	")ENGINE=InnoDB DEFAULT CHARSET=utf8;";
 
 $create_Comment = "CREATE TABLE `Comment` (".
 	"`CommentID` INT(8) UNSIGNED ZEROFILL PRIMARY KEY AUTO_INCREMENT NOT NULL,".
@@ -47,14 +47,14 @@ $create_Comment = "CREATE TABLE `Comment` (".
 	"`Context` TEXT NOT NULL,".
 	"`isAnonymous` BOOLEAN DEFAULT 1 NOT NULL," .
 	"`SubmitTime` DATETIME DEFAULT CURRENT_TIMESTAMP" .
-	");";
+	")ENGINE=InnoDB DEFAULT CHARSET=utf8;";
 
 $create_Up = "CREATE TABLE `Up` (".
 	"`UpID` INT(8) UNSIGNED ZEROFILL PRIMARY KEY AUTO_INCREMENT NOT NULL,".
 	"`UserID` INT NOT NULL,FOREIGN KEY(`UserID`) REFERENCES `UserInfo`(`UserID`),".
 	"`ItemID` INT(8) UNSIGNED ZEROFILL NOT NULL,FOREIGN KEY(`ItemID`) REFERENCES `Publish`(`ItemID`),".
 	"`SubmitTime` DATETIME DEFAULT CURRENT_TIMESTAMP" .
-	");";
+	")ENGINE=InnoDB DEFAULT CHARSET=utf8;";
 
 mysqli_query($dbc, $create_SchoolInfo);
 mysqli_query($dbc, $create_UserInfo);

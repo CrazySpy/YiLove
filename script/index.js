@@ -57,11 +57,13 @@ function GetMaxPage()
 
 function ConstructCommentNode(comment)
 {
+	if(comment.NickName == "")
+		comment.NickName = "路人甲";
 	var node = 
 		'<div id="loveComment_' + comment.CommentID + '">' +
 		'<div id="loveComment_time_' + comment.CommentID + '">评论时间：' + comment.SubmitTime + '</div>' +
 		'<div id=loveComment_words_' + comment.CommentID + '">' +  comment.Context  + '</div>' +
-		'<div id="loveComment_user_' + comment.CommentID + '">' + comment.SubmitUser + '</div>' +
+		'<div id="loveComment_user_' + comment.CommentID + '">' + comment.NickName + '</div>' +
 		'</div>';
 	return node;
 }
@@ -157,15 +159,17 @@ function SetItemComments()
 
 function ConstructItemNode(item)
 {
+	if(item.NickName == "")
+		item.NickName = "路人甲";
 	var node = 
 		'<div id="loveItem_' + item.ItemID + '">' +
 		'<div id="loveTime_' + item.ItemID + '" class="loveTime">表白时间：' + item.SubmitTime + '</div>' +
 		'<div id="loveTarget_' + item.ItemID + '" class="loveTarget">Dear ' + item.TargetName + '</div>' +
 		'<div id="loveWords_' + item.ItemID + '" class="loveWords">' + item.Context + '</div>' +
-		'<div id="loveUser_' + item.ItemID + '" class="loveUser">From ' + item.SubmitUser + '</div>' +
+		'<div id="loveUser_' + item.ItemID + '" class="loveUser">From ' + item.NickName + '</div>' +
 		'<div id="loveOperation_' + item.ItemID + '">' + 
-		'<div id="loveOperation_up_' + item.ItemID + '" class="inline handCursor littleMargin">'+ "赞(" + '<div id="upNum_' + item.ItemID + '" class="inline">' + item.UpNum + '</div>)</div>'+
-		'<div id="loveOperation_comment_' + item.ItemID + '"  class="inline handCursor littleMargin">' + '评论(' + '<div id="commentNum_' + item.ItemID + '" class="inline">' + item.CommentNum + '</div>)</div>' +
+		'<div id="loveOperation_up_' + item.ItemID + '" class="inline handCursor littleMargin">'+ "赞(" + '<div id="upNum_' + item.ItemID + '" class="inline">' + item.UpCount + '</div>)</div>'+
+		'<div id="loveOperation_comment_' + item.ItemID + '"  class="inline handCursor littleMargin">' + '评论(' + '<div id="commentNum_' + item.ItemID + '" class="inline">' + item.CommentCount + '</div>)</div>' +
 		'</div>' +
 		'<div id="commentArea_' + item.ItemID + '" style="display:none;">' + 
 		'<textarea id="commentArea_context_' + item.ItemID + '" name="context" class="loveComment wideTextArea littleMargin autoMargin littleBorderRadius" row =100 col=100></textarea>' +

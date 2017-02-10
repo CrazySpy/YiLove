@@ -14,19 +14,39 @@ else
 
 $dbc_getItems = new SQL;
 
-$columns_getItems = Array();//="*"
+$columns_getItems = Array(
+	"Publish.ItemID",
+	"Publish.UserID",
+	"Publish.Context",
+	"Publish.TargetName",
+	"Publish.isAnonymous",
+	"Publish.CommentCount",
+	"Publish.UpCount",
+	"Publish.SubmitTime",
+	"UserInfo.UserName",
+	"UserInfo.NickName"
+);
+$joinTables_getItems = Array(
+	"`UserInfo`"
+);
+$on_getItems = Array(
+	"Publish.UserID=UserInfo.UserID"
+);
 $where_getItems = Array();//="*"
 
-$rtn = $dbc_getItems->SQLSelect($columns_getItems,"`Publish`",$where_getItems,($page - 1) * $itemsPerPage,$itemsPerPage,null,"ORDER BY `SubmitTime` DESC",PDO::FETCH_ASSOC);
+$rtn = $dbc_getItems->SQLInnerJoinSelect($columns_getItems,"`Publish`",$joinTables_getItems,$on_getItems,$where_getItems,($page - 1) * $itemsPerPage,$itemsPerPage,"ORDER BY Publish.SubmitTime DESC");
+
 if($rtn["status"] === "success")
 {
-	foreach($rtn["info"]["message"] as $element)
+	foreach($rtn["info"]["message"] as $element => $v)
 	{
-		if($element["isAnonymous"] == 1)
+		if($v["isAnonymous"] == 1)
 		{
-			$element["UserID"] = "";
+			$rtn["info"]["message"][$element]["UserID"] = "";
+			$rtn["info"]["message"][$element]["UserName"] = "";
+			$rtn["info"]["message"][$element]["NickName"] = "";
 		}
-	}
+	}	
 }
 exit(json_encode($rtn));
 ?>

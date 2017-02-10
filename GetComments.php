@@ -12,18 +12,36 @@ else
 }
 $dbc_getComments = new SQL;
 
-$columns_getComments = Array(); //="*"
-$where_getComments	 = Array(); //="*"
-$rtn = $dbc_getComments->SQLSelect($columns_getBack,"`Comment`",$where_getBack,1,-1,NULL,"ORDER BY SubmitTime DESC");
+$columns_getComments = Array(
+	"Comment.ItemID",
+	"Comment.UserID",
+	"Comment.Context",
+	"Comment.isAnonymous",
+	"Comment.SubmitTime",
+	"UserInfo.UserName",
+	"UserInfo.NickName"
+);
+$joinTables_getComments = Array(
+	"`UserInfo`"
+);
+$on_getComments = Array(
+	"Comment.UserID = UserInfo.UserID"
+);
+
+$where_getComments	 = Array(
+	"Comment.ItemID" => $itemID
+);
+$rtn = $dbc_getComments->SQLInnerJoinSelect($columns_getComments,"`Comment`",$joinTables_getComments,$on_getComments,$where_getComments,1,-1,"ORDER BY Comment.SubmitTime DESC");
 if($rtn["status"] === "success")
 {
-	foreach($rtn["info"]["message"] as $element)
+	foreach($rtn["info"]["message"] as $element => $v)
 	{
-		if($element["isAnonymous"] == 1)
+		if($v["isAnonymous"] == 1)
 		{
-			$element["UserID"] = "";
+			$rtn["info"]["message"][$element]["UserID"] = "";
+			$rtn["info"]["message"][$element]["UserName"] = "";
+			$rtn["info"]["message"][$element]["NickName"] = "";
 		}
-	}
-}
-exit(json_encode($rtn));
+	}}
+		exit(json_encode($rtn));
 ?>
