@@ -16,7 +16,7 @@ class SQL
 		$this -> database = $GLOBALS["db_name"];
 
 		$dsn = "mysql:dbname=$this->database;host=$this->ipAddr;port=$this->port;";
-		$this->PDO = new PDO($dsn,$this->username,$this->password);
+		$this->PDO = new PDO($dsn,$this->username,$this->password,array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'));
 	}
 
 	function __destruct()
