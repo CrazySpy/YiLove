@@ -47,12 +47,7 @@ function ConstructReturnJSON($status = "success",$code = null,$message = null,$e
 
 function toSQLSafeString($string)
 {
-	$string = str_ireplace('"', '\"',$string);
-	$string = str_ireplace("'", "\'",$string);
-	$string = str_ireplace("\\", "\\\\",$string);
-	$string = str_ireplace("/", "\/",$string);
-	$string = str_ireplace(";", "\;",$string);
-	$string = str_ireplace(".", "\.",$string);
+	$string = htmlspecialchars($string);
 	return $string;
 }
 
