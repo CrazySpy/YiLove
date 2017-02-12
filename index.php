@@ -21,14 +21,23 @@ session_start();
 		<div id="message"></div>
 		<div name="block" style="top:0;left:0;width:100%;height:55px;" class="noMargin autoMargin"></div>
 		<div id="submitArea" class="centerAligin littleBorderRadius">
-            <textarea id="submitArea_context" class="wideTextArea littleBorderRadius littleMargin" name="context" row =100 col=100></textarea><br/>
-            <input id="submitArea_targetName" name="targetName"/>
-            <input id="submitArea_isAnonymous" name="isAnonymous" type="checkbox" checked="checked" />
-            <div id = "submitArea_submit" class="handCursor centerAligin noMargin autoMargin">发布</div>
+			<div id="submitArea_targetName" class="leftAlign littleMargin">
+				Dear<input id="submitArea_targetName_context" class="littleBorderRadius" name="targetName"/>
+			</div>
+			<div class="centerTextAlign"><textarea id="submitArea_context" class="wideTextArea littleBorderRadius littleMargin" name="context" row =100 col=100></textarea></div>
+			<div id"submitArea_isAnonymous" class="rightTextAlign LittlePadding">
+				From <div id="submitArea_isAnonymous_context" class="inline handCursor" name="isAnonymous">路人甲</div><br/>
+				<div id="submitArea_isAnonymous_option" class="hide rightAlign">
+					<div id="submitArea_isAnonymous_nickName" class="greyBox handCursor"></div>
+					<div id="submitArea_isAnonymous_anonymous" class="greyBox handCursor">路人甲</div>
+				</div>
+			</div>
+			<div id = "submitArea_submit" class="handCursor centerTextAlign autoMargin">发布</div>
+			<br/>
         </div>
         <div id = "listArea">
         </div>
-        <div id="loadingBar">
+        <div id="loadingBar" class="loadingBar">
         </div>
     </body>
 </html>

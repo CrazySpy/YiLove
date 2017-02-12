@@ -13,6 +13,7 @@ $create_UserInfo = "CREATE TABLE `UserInfo` (" .
 	"`RealName` VARCHAR(30)," .
 	"`UserName` VARCHAR(50) NOT NULL, " . 
 	"`Sex` CHAR(1)," .
+	"`UserHead` TEXT"
 	"`NickName` VARCHAR(50) NOT NULL," . 
 	"`SchoolID` INT,FOREIGN KEY(`SchoolID`) REFERENCES `SchoolInfo`(`SchoolID`)" . 
 	")ENGINE=InnoDB DEFAULT CHARSET=utf8;";

@@ -20,6 +20,7 @@ if(!isYibanLogin())
 		"SchoolID" => toSQLSafeString($yiban->GetSchoolID())
 	);
 	$count_isSchoolExist = $dbc_setInfo->SQLCount("SchoolInfo",$schoolInfo);
+	$rtn;
 	if($dbc_setInfo->GetlastStatus() !== "success")
 	{
 		exit("错误代码:" . $count_isSchoolExist["info"]["code"]);
@@ -33,7 +34,6 @@ if(!isYibanLogin())
 		$rtn = $dbc_setInfo->SQLInsert("SchoolInfo",$schoolInfo);
 	}
 
-
 	if($dbc_setInfo->GetLastStatus() === "success")
 	{
 		$userInfo = Array(
@@ -41,25 +41,26 @@ if(!isYibanLogin())
 		);
 		$count_isUserExist = $dbc_setInfo->SQLCount("UserInfo",$userInfo);
 		if($dbc_setInfo->GetLastStatus() !== "success")
-		{
+		{		
 			exit("发生错误:" . $count_isUserExist["info"]["code"]);
 		}
 		if($count_isUserExist["info"]["message"] == 0)
 		{
 			$userInfo = Array(
-				"`UserID`"	=> $_SESSION["userID"],
+				"`UserID`"		=> $_SESSION["userID"],
 				"`RealName`"	=> "unknown",
 				"`UserName`"	=> toSQLSafeString($yiban->GetUserName()),
-				"`Sex`"		=> toSQLSafeString($yiban->GetSex()),
+				"`Sex`"			=> toSQLSafeString($yiban->GetSex()),
 				"`NickName`"	=> toSQLSafeString($yiban->GetNickName()),
 				"`SchoolID`"	=> toSQLSafeString($yiban->GetSchoolID()),
+				"`UserHead`"	=> $yiban->GetUserHead()
 			);
 			$rtn = $dbc_setInfo->SQLInsert("UserInfo",$userInfo);
 
 		}
-		if($rtn["status"] !== "success")
+		if(!empty($rtn) && $rtn["status"] !== "success")
 		{
-			exit("错误代码:" . $rtn["info"]["code"]);
+			exit("错误代码:" . $rtn["info"]["message"]);
 		}
 	}
 	header("location:index.php");

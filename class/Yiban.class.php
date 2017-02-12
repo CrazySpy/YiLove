@@ -51,7 +51,7 @@ class Yiban
 		}
 		else
 		{
-			exit($rtn["info"]["msgCN"]);
+			exit($rtn["msgCN"]);
 		}
 	}
 
@@ -162,7 +162,10 @@ class Yiban
 	{
 		return $this->GetInfo("yb_username");
 	}
-
+	public function GetUserHead()
+	{
+		return $this->GetInfo("yb_userhead");
+	}
 
 };
 ?>

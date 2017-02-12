@@ -15,9 +15,14 @@ function ShowMessage(type,message)
 		iconURL = "./image/success.png";
 		backgroundColor = "yellowgreen";
 	}
+	else if(type === "warning")
+	{
+		iconURL = "./image/warning.png";
+		backgroundColor = "yellow";
+	}
 	else
 		return;
-	var node = '<div class="message fixedPosition" style="display:none;z-index:auto;background-color:' + backgroundColor + '"><img src="' + iconURL + '" />' + message +'</div>';
+	var node = '<div class="message fixedPosition centerTextAlign autoMargin" style="display:none;z-index:auto;background-color:' + backgroundColor + '"><img src="' + iconURL + '" />' + message +'</div>';
 	$message = $(node);
 	$("#message").html($message);
 	$message.fadeIn(2000,function(){
@@ -57,13 +62,18 @@ function GetMaxPage()
 
 function ConstructCommentNode(comment)
 {
-	if(comment.NickName == "")
+	if(comment.isAnonymous == 1)
 		comment.NickName = "路人甲";
 	var node = 
+		'<hr/>' + 
 		'<div id="loveComment_' + comment.CommentID + '">' +
-		'<div id="loveComment_time_' + comment.CommentID + '">评论时间：' + comment.SubmitTime + '</div>' +
-		'<div id=loveComment_words_' + comment.CommentID + '">' +  comment.Context  + '</div>' +
-		'<div id="loveComment_user_' + comment.CommentID + '">' + comment.NickName + '</div>' +
+		'<div id=userHead_comment class="userHead leftAlign littleMargin autoMargin">' + '<img src="' + comment.UserHead + '"/>' + '</div>' +
+
+		'<div id="loveComment_text_' + comment.CommentID + '" class="inline">' +
+		'<div id="loveComment_time_' + comment.CommentID + '" class="loveTime">评论时间：' + comment.SubmitTime + '</div>' +
+		'<div id="loveComment_user_' + comment.CommentID + '" >' + comment.NickName + ':</div>' +
+		'<div id=loveComment_words_' + comment.CommentID + '" class="loveWords">' +  comment.Context  + '</div>' +
+		'</div>'+
 		'</div>';
 	return node;
 }
@@ -81,7 +91,7 @@ function SubmitComment()
 		var commentContext = $("#commentArea_context_" + itemID).val();
 		if(commentContext == "")
 		{
-			ShowMessage("error","评论不可为空");
+			ShowMessage("warning","评论不可为空");
 			return;
 		}
 		$.ajax({
@@ -99,6 +109,7 @@ function SubmitComment()
 				{
 					ShowMessage("success","发表成功");
 					var newComment = rtnData["info"]["message"][0];
+					newComment.Context = ReturnToBr(newComment.Context);
 					var node = ConstructCommentNode(newComment);
 					$(node).prependTo("#loveComments_" + itemID).hide().slideDown("slow");
 					$("#commentArea_context_" + itemID).val("");
@@ -117,49 +128,57 @@ function SubmitComment()
 		});
 	});
 }
-
-function SetItemComments()
+function ReturnToBr(str) { 
+	return str.replace(/\r?\n/g,"<br />"); 
+} 
+function SetItemComments(itemID)
 {
-	$(document).delegate("[id^=loveOperation_comment_]","click",function(){
-		var itemID = $(this).attr("id").substr(22);
-		$("#commentArea_" + itemID).slideToggle("slow");
+	$("#loadingBar_comment_" +itemID).click(function(){
+		SetItemComments(itemID);
+	});
 
-		if($("#loveComments_" + itemID).html() != "")
-			return;
-
-		$.ajax({
-			url:"GetComments.php",
-			type:"GET",
-			async:false,
-			dataType:"json",
-			data:"itemID=" + itemID,
-			success:function(rtnData){
-				if(rtnData["status"] != "success")
-				{
-					ShowMessage("error","获取数据时发生错误");
-					$("#loveComments_" + itemID).html("获取数据时发生错误");
-				}
+	$.ajax({
+		url:"GetComments.php",
+		type:"GET",
+		async:false,
+		dataType:"json",
+		data:{itemID:itemID,page:$("#commentPage_" + itemID).val()},
+		success:function(rtnData){
+			if(rtnData["status"] != "success")
+			{
+				ShowMessage("error",rtnData["info"]["message"]);
+				$("#loveComments_" + itemID).html(rtnData["info"]["message"]);
+			}
+			else
+			{
 				var comments = rtnData["info"]["message"];
 				$.each(comments,function(index,item){
+					item.Context = ReturnToBr(item.Context);
 					AddItemComment(itemID,item);
 				});
-			},
-			error:function(XMLHttpRequest, textStatus, errorThrown){
-				if(textStatus == "parseerror")
-					ShowMessage("error","发生错误:返回数据格式有误,错误代码:3101");
-				else if(textStatus == "timeout")
-					ShowMessage("error","发生错误:与服务器失去联系,错误代码:3102");
-				else 
-					ShowMessage("error","发生错误:接受返回数据时发生错误,错误代码:3103");
+				$("#commentPage_" + itemID).val(parseInt($("#commentPage_" + itemID).val()) + 1);
 			}
-
-		});
+			$("#loadingBar_comment_" + itemID).html("点击加载下10条");
+			if(parseInt($("#commentPage_" + itemID).val()) > Math.ceil(parseInt($("#commentNum_" + itemID).html()) / 10))
+			{
+				$("#loadingBar_comment_" + itemID).html("已经到底了哦");
+				$("#loadingBar_comment_" + itemID).off("click");
+			}
+		},
+		error:function(XMLHttpRequest, textStatus, errorThrown){
+			if(textStatus == "parseerror")
+				ShowMessage("error","发生错误:返回数据格式有误,错误代码:3101");
+			else if(textStatus == "timeout")
+				ShowMessage("error","发生错误:与服务器失去联系,错误代码:3102");
+			else 
+				ShowMessage("error","发生错误:接受返回数据时发生错误,错误代码:3103");
+		}
 	});
 }
 
 function ConstructItemNode(item)
 {
-	if(item.NickName == "")
+	if(item.isAnonymous == 1)
 		item.NickName = "路人甲";
 	var node = 
 		'<div id="loveItem_' + item.ItemID + '">' +
@@ -167,14 +186,16 @@ function ConstructItemNode(item)
 		'<div id="loveTarget_' + item.ItemID + '" class="loveTarget">Dear ' + item.TargetName + '</div>' +
 		'<div id="loveWords_' + item.ItemID + '" class="loveWords">' + item.Context + '</div>' +
 		'<div id="loveUser_' + item.ItemID + '" class="loveUser">From ' + item.NickName + '</div>' +
-		'<div id="loveOperation_' + item.ItemID + '">' + 
+		'<div id="loveOperation_' + item.ItemID + '" class="centerTextAlign">' + 
 		'<div id="loveOperation_up_' + item.ItemID + '" class="inline handCursor littleMargin">'+ "赞(" + '<div id="upNum_' + item.ItemID + '" class="inline">' + item.UpCount + '</div>)</div>'+
 		'<div id="loveOperation_comment_' + item.ItemID + '"  class="inline handCursor littleMargin">' + '评论(' + '<div id="commentNum_' + item.ItemID + '" class="inline">' + item.CommentCount + '</div>)</div>' +
 		'</div>' +
-		'<div id="commentArea_' + item.ItemID + '" style="display:none;">' + 
-		'<textarea id="commentArea_context_' + item.ItemID + '" name="context" class="loveComment wideTextArea littleMargin autoMargin littleBorderRadius" row =100 col=100></textarea>' +
+		'<div id="commentArea_' + item.ItemID + '" class="hide">' + 
+		'<div class="centerTextAlign"><textarea id="commentArea_context_' + item.ItemID + '" name="context" class="loveCommentBox wideTextArea littleBorderRadius" row =100 col=100></textarea></div>' +
 		'<div id="commentArea_submit_' + item.ItemID + '"  class="loveComment_Submit handCursor centerAligin autoMargin littleMargin">提交</div>' +
 		'<div id="loveComments_' + item.ItemID +'">' + '</div>' +
+		'<div id="loadingBar_comment_' + item.ItemID + '" class="loadingBar">点击加载下10条</div>'+
+		'<input id="commentPage_' + item.ItemID + '"  value="1" class="hide"/>' +
 		'</div>' +
 		'</div>';
 	return node;
@@ -204,9 +225,11 @@ function SetList(page)
 			{
 				ShowMessage("error","获取数据时发生错误");
 				$("#listArea").html("获取数据时发生错误");
+				return;
 			}
 			var items = rtnData["info"]["message"];
 			$.each(items,function(index,item){
+				item.Context = ReturnToBr(item.Context);
 				AddListItem(item);
 			});
 		},
@@ -228,25 +251,25 @@ function Submit()
 	$("#submitArea_submit").click(function(){
 		if($("#submitArea_context").val()==="")
 		{
-			ShowMessage("error","表白内容不可为空");
+			ShowMessage("warning","表白内容不可为空");
 			return;
 		}
-		if($("#submitArea_targetName").val()==="")
+		if($("#submitArea_targetName_context").val()==="")
 		{
-			ShowMessage("error","表白对象不可为空");
+			ShowMessage("warning","表白对象不可为空");
 			return;
 		}
 		if(!isSending)
 			isSending = true;
 		else
 		{
-			ShowMessage("error","请勿重复请求");
+			ShowMessage("warning","请勿重复请求");
 			return;
 		}
 
 		$(this).html("正在发布..");
 		var isAnonymous;
-		if($("#submitArea_isAnonymous").is(":checked"))
+		if($("#submitArea_isAnonymous_context").html()=="路人甲")
 			isAnonymous = "on";
 		else
 			isAnonymous = "off";
@@ -254,7 +277,7 @@ function Submit()
 			url:"submit.php",
 			type:"POST",
 			dataType:"json",
-			data:{context:$("#submitArea_context").val(),targetName:$("#submitArea_targetName").val(),isAnonymous:isAnonymous},
+			data:{context:$("#submitArea_context").val(),targetName:$("#submitArea_targetName_context").val(),isAnonymous:isAnonymous},
 			async:false,
 			success:function(rtnData){
 				//				rtnData = $.parseJSON(rtnData);
@@ -264,10 +287,11 @@ function Submit()
 				{
 					ShowMessage("success","发表成功");
 					var item = rtnData["info"]["message"][0];
+					item.Context = ReturnToBr(item.Context);
 					var node = ConstructItemNode(item);
 					$(node).prependTo("#listArea").hide().slideDown("slow");
 					$("#submitArea_context").val("");
-					$("#submitArea_targetName").val("");
+					$("#submitArea_targetName_context").val("");
 				}
 				isSending = false;
 				$("#submitArea_submit").html("发布");
@@ -280,6 +304,9 @@ function Submit()
 					ShowMessage("error","发生错误:与服务器失去联系,错误代码:3102");
 				else 
 					ShowMessage("error","发生错误:接受返回数据时发生错误,错误代码:3103");
+
+				isSending = false;
+				$("#submitArea_submit").html("发布");
 			}
 		});
 	});
@@ -330,7 +357,7 @@ function GetCookie(cookieName)
 	if(arr != null)
 		return unescape(arr[2]); 
 	else
-  	 return null;
+		return null;
 }
 
 function SetLoginInfo()
@@ -365,8 +392,32 @@ $(document).ready(function(){
 		});
 	});
 	Submit();
-	SetItemComments();
 	SubmitComment();
 	SubmitUp();
 	SetLoginInfo();
+
+	$("#submitArea_isAnonymous_nickName").append(GetCookie("nickName"));
+	$("#submitArea_isAnonymous_context").click(function(){
+		$("#submitArea_isAnonymous_option").slideToggle("slow");
+	});
+	$("#submitArea_isAnonymous_nickName").click(function(){
+		$("#submitArea_isAnonymous_context").html(GetCookie("nickName"));
+		$("#submitArea_isAnonymous_option").slideToggle("slow");
+	});
+	$("#submitArea_isAnonymous_anonymous").click(function(){
+		$("#submitArea_isAnonymous_context").html("路人甲");
+		$("#submitArea_isAnonymous_option").slideToggle("slow");
+	});
+
+	$(document).delegate("[id^=loveOperation_comment_]","click",function(){
+		var itemID = $(this).attr("id").substr(22);
+		$("#commentArea_" + itemID).slideToggle("slow");
+		if(parseInt($("#commentPage_" + itemID).val()) == 1)
+		{
+			$("#loadingBar_comment_" + itemID).html('<div><img src="image/loading.gif" />正在加载..</div>');
+			SetItemComments(itemID);
+		}
+	});
+
 });
+

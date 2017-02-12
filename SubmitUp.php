@@ -24,7 +24,7 @@ function CheckItemID($dbc,$itemID)
 	$checkItemID = Array(
 		"ItemID" => $itemID
 	);
-	$rtn = $dbc->SQLCount("Publish",$CheckItemID);	
+	$rtn = $dbc->SQLCount("Publish",$checkItemID);	
 	if($dbc->GetLastStatus() === "success")
 	{
 		return $rtn["info"]["message"];

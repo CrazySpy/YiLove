@@ -62,12 +62,14 @@ if($dbc_submitComment->GetLastStatus() === "success")
 				//Get the comment back for rewrite
 				$columns_getBack = Array(
 					"Comment.ItemID",
+					"Comment.CommentID",
 					"Comment.UserID",
 					"Comment.Context",
 					"Comment.isAnonymous",
 					"Comment.SubmitTime",
 					"UserInfo.UserName",
-					"UserInfo.NickName"
+					"UserInfo.NickName",
+					"UserInfo.UserHead"
 				); 
 				$joinTable_getBack = Array(
 					"`UserInfo`"
@@ -88,6 +90,7 @@ if($dbc_submitComment->GetLastStatus() === "success")
 						$rtn["info"]["message"][0]["UserID"] = "";
 						$rtn["info"]["message"][0]["UserName"] = "";
 						$rtn["info"]["message"][0]["NickName"] = "";
+						$rtn["info"]["message"][0]["UserHead"] = "../image/anonymous.png";
 					}
 				}
 			}

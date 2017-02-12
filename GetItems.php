@@ -24,7 +24,8 @@ $columns_getItems = Array(
 	"Publish.UpCount",
 	"Publish.SubmitTime",
 	"UserInfo.UserName",
-	"UserInfo.NickName"
+	"UserInfo.NickName",
+	"UserInfo.UserHead"
 );
 $joinTables_getItems = Array(
 	"`UserInfo`"
@@ -45,6 +46,7 @@ if($rtn["status"] === "success")
 			$rtn["info"]["message"][$element]["UserID"] = "";
 			$rtn["info"]["message"][$element]["UserName"] = "";
 			$rtn["info"]["message"][$element]["NickName"] = "";
+			$rtn["info"]["message"][$element]["UserHead"] = "../image/anonymous.png";
 		}
 	}	
 }

@@ -110,6 +110,7 @@ class SQL
 		$count_insertData = count($insertData);
 
 		$keys = array_keys($insertData);
+		$columns = null;
 		for($i = 0;$i<$count_insertData;++$i)
 		{
 			if($i != 0)
@@ -119,6 +120,7 @@ class SQL
 			$columns .= $keys[$i]; 		
 		}
 
+		$data = null;
 		for($i = 0;$i<$count_insertData;++$i)
 		{
 			if($i != 0)
@@ -182,6 +184,7 @@ class SQL
 			$set = implode(",",$set);
 		}
 		 */
+		$set = null;
 		for($i = 0;$i < $count_setData;++$i)
 		{
 			if($i != 0)
@@ -246,6 +249,7 @@ class SQL
 				$tableName = "(" . $tableName;
 			}
 		}
+		$join = null;
 		for($i = 0;$i<$count_joinTables;++$i)
 		{
 			if($i != 0)
@@ -255,6 +259,7 @@ class SQL
 			$join .= "INNER JOIN " . $joinTables[$i];
 		}
 
+		$on = null;
 		for($i = 0;$i<$count_onData;++$i)
 		{
 			if($i != 0)

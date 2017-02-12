@@ -53,7 +53,8 @@ if($dbc_submitItem->GetLastStatus() === "success")
 		"Publish.UpCount",
 		"Publish.SubmitTime",
 		"UserInfo.UserName",
-		"UserInfo.NickName"
+		"UserInfo.NickName",
+		"UserInfo.UserHead"
 	);
 	$joinTables_getBack = Array(
 		"`UserInfo`"
@@ -72,6 +73,7 @@ if($dbc_submitItem->GetLastStatus() === "success")
 		$rtn["info"]["message"][0]["UserID"] = "";
 		$rtn["info"]["message"][0]["UserName"] = "";
 		$rtn["info"]["message"][0]["NickName"] = "";
+		$rtn["info"]["message"][0]["UserHead"] = "../image/anonymous.png";
 	}
 }
 exit(json_encode($rtn));

@@ -10,10 +10,15 @@ and open the template in the editor.
 body{
     background-color: skyblue;
 }
+
 body > div{
     width:50%;
-    text-align:center;
-    margin:0px auto;
+	margin:auto;
+}
+hr{
+	height:1px;
+	margin:0;
+	border-top:1px dashed #0066CC;
 }
 
 .handCursor{
@@ -37,9 +42,16 @@ body > div{
 .noPadding{
 	padding:0px;
 }
-.centerAligin{
+.centerTextAlign{
 	text-align:center;
 }
+.leftTextAlign{
+	text-align:left;
+}
+.rightTextAlign{
+	text-align:right;
+}
+
 .littleBorderRadius{
 	border-radius:5px;
 }
@@ -58,7 +70,15 @@ body > div{
 .rightAlign{
 	float:right;
 }
-
+.hide{
+	display:none;
+}
+.greyBox{
+	border:1px;
+	border-style:solid;
+	border-color:white;
+	background-color:grey;
+}
 /*head part style start*/
 #headBar{
 	left:0;
@@ -88,14 +108,17 @@ body > div{
     background-color: #ff6513;
 }
 
-#submitArea_targetName
-{
-    border-width: 1px;
-    border-color: skyblue;
-}
 #submitArea_context{
     height: 180px;
     border-color: skyblue;
+}
+
+#submitArea_isAnonymous{
+	width:100%;
+}
+
+#submitArea_isAnonymous_context{
+	font-size:100%;
 }
 /*submit area style end*/
 
@@ -133,22 +156,33 @@ body > div{
     text-align: right;
     font-size: 16px;
 }
-.loveComment{
+.loveCommentBox{
 	height:100px;
 }
 .loveComment_Submit{
 	width:40px;
 }
+.userHead{
+	height:50px;
+	width:50px;
+}
+.userHead img{
+	height:50px;
+	width:50px;
+}
+
+
 /*list area style end*/
 
 /*loading bar style start*/
-#loadingBar{
+.loadingBar{
     border-radius:2px;
     background-color: gray;
     margin:5 auto;
     font-size: 20px;
+	text-align:center;
 }
-#loadingBar img{
+.loadingBar img{
     height : 20px;
     width:20px;
 }
@@ -156,8 +190,10 @@ body > div{
 
 .message{
     border-radius:10px;
-    width:20%;
-    left: 40%;
+    width:25%;
+	word-wrap:break-word;
+    left: 0;
+	right:0;
     top:30%;
     font-size: large;
 }
