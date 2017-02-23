@@ -7,10 +7,10 @@ require_once($_SERVER["DOCUMENT_ROOT"] . "/config.php");
 
 if(!isYibanLogin())
 {
-	exit(json_encode(ConstructReturnJSON("error",3003,"未登录到易班")));
+	exit(json_encode(ConstructReturnJSON("warning",null,"未登录到易班")));
 }
 
-if(empty($_POST["context"]) || empty($_POST["targetName"]) || empty($_POST["isAnonymous"]))
+if(!isset($_POST["context"]) || !isset($_POST["isAnonymous"]) || $_POST["context"] === "" || $_POST["targetName"] === "")
 {
 	exit(json_encode(ConstructReturnJSON("error",3001,"有数据为非法空")));
 }

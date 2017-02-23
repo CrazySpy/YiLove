@@ -3,6 +3,7 @@ require_once($_SERVER["DOCUMENT_ROOT"] . "/PublicFunction.php");
 require_once($_SERVER["DOCUMENT_ROOT"] . "/class/SQL.class.php");
 require_once($_SERVER["DOCUMENT_ROOT"] . "/config.php");
 
+$commentsPerPage = 10;
 
 if(isset($_GET["itemID"]) && isset($_GET["page"]))
 {
@@ -37,6 +38,7 @@ $where_getComments	 = Array(
 	"Comment.ItemID" => $itemID
 );
 $rtn = $dbc_getComments->SQLInnerJoinSelect($columns_getComments,"`Comment`",$joinTables_getComments,$on_getComments,$where_getComments,($page - 1) * $commentsPerPage,$commentsPerPage,"ORDER BY Comment.SubmitTime DESC");
+
 if($rtn["status"] === "success")
 {
 	foreach($rtn["info"]["message"] as $element => $v)

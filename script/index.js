@@ -46,7 +46,7 @@ function GetMaxPage()
 			if(rtnData["status"] === "success")
 				maxPage = Math.ceil(rtnData["info"]["message"] / itemsPerPage);
 			else
-				ShowMessage("error","发生错误:" + rtnData["info"]["message"] + ",错误代码：" + rtnData["info"]["code"]);
+				ShowMessage(rtnData["status"],rtnData["info"]["message"]);
 		},
 		error:function(XMLHttpRequest, textStatus, errorThrown){
 			if(textStatus == "parseerror")
@@ -103,7 +103,7 @@ function SubmitComment()
 			success:function(rtnData){
 				if(rtnData["status"] != "success")
 				{
-					ShowMessage("error","发生错误:" + rtnData["info"]["message"] + ",错误代码：" + rtnData["info"]["code"]);
+					ShowMessage(rtnData["status"],rtnData["info"]["message"]);
 				}
 				else
 				{
@@ -146,7 +146,7 @@ function SetItemComments(itemID)
 		success:function(rtnData){
 			if(rtnData["status"] != "success")
 			{
-				ShowMessage("error",rtnData["info"]["message"]);
+				ShowMessage(rtnData["status"],rtnData["info"]["message"]);
 				$("#loveComments_" + itemID).html(rtnData["info"]["message"]);
 			}
 			else
@@ -249,12 +249,12 @@ var isSending = false;
 function Submit()
 {
 	$("#submitArea_submit").click(function(){
-		if($("#submitArea_context").val()==="")
+		if($("#submitArea_context").val()=="")
 		{
 			ShowMessage("warning","表白内容不可为空");
 			return;
 		}
-		if($("#submitArea_targetName_context").val()==="")
+		if($("#submitArea_targetName_context").val()=="")
 		{
 			ShowMessage("warning","表白对象不可为空");
 			return;
@@ -282,7 +282,7 @@ function Submit()
 			success:function(rtnData){
 				//				rtnData = $.parseJSON(rtnData);
 				if(rtnData["status"] !== "success")
-					ShowMessage("error","发生错误:" + rtnData["info"]["message"] + ",错误代码：" + rtnData["info"]["code"]);
+					ShowMessage(rtnData["status"],rtnData["info"]["message"]);
 				else
 				{
 					ShowMessage("success","发表成功");
@@ -324,7 +324,7 @@ function SubmitUp()
 			data:{itemID:itemID},
 			success:function(rtnData){
 				if(rtnData["status"] !== "success")
-					ShowMessage("error","发生错误:" + rtnData["info"]["message"] + ",错误代码：" + rtnData["info"]["code"]);
+					ShowMessage(rtnData["status"],rtnData["info"]["message"]);
 				else
 				{
 					ShowMessage("success","点赞成功");
@@ -366,7 +366,7 @@ function SetLoginInfo()
 	{
 		if(GetCookie("nickName") != null)
 		{
-			$("#loginInfo").html("欢迎您," + GetCookie("nickName") + '  ' + '<a href="logout.php">退出登录</a>');
+			$("#loginInfo").html("欢迎您," + decodeURIComponent(GetCookie("nickName")) + '  ' + '<a href="logout.php">退出登录</a>');
 		}
 	}
 	else
@@ -396,12 +396,14 @@ $(document).ready(function(){
 	SubmitUp();
 	SetLoginInfo();
 
-	$("#submitArea_isAnonymous_nickName").append(GetCookie("nickName"));
+
+	if(GetCookie("nickName") != null)
+		$("#submitArea_isAnonymous_nickName").append(decodeURIComponent(GetCookie("nickName")));
 	$("#submitArea_isAnonymous_context").click(function(){
 		$("#submitArea_isAnonymous_option").slideToggle("slow");
 	});
 	$("#submitArea_isAnonymous_nickName").click(function(){
-		$("#submitArea_isAnonymous_context").html(GetCookie("nickName"));
+		$("#submitArea_isAnonymous_context").html(decodeURIComponent(GetCookie("nickName")));
 		$("#submitArea_isAnonymous_option").slideToggle("slow");
 	});
 	$("#submitArea_isAnonymous_anonymous").click(function(){
@@ -420,4 +422,3 @@ $(document).ready(function(){
 	});
 
 });
-

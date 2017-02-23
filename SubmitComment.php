@@ -6,10 +6,10 @@ require_once($_SERVER["DOCUMENT_ROOT"] . "/PublicFunction.php");
 
 if(!isYibanLogin())
 {
-	exit(json_encode(ConstructReturnJSON("error",3003,"未登录到易班")));
+	exit(json_encode(ConstructReturnJSON("warning",null,"未登录到易班")));
 }
 
-if(empty($_POST["context"]) || empty($_POST["itemID"]))
+if(!isset($_POST["context"]) || !isset($_POST["itemID"]) || $_POST["context"] === "" || $_POST["itemID"] === "")
 {
 	exit(json_encode(ConstructReturnJSON("error","3001","有数据为非法空")));
 }

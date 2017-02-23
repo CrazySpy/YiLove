@@ -6,7 +6,7 @@ require_once($_SERVER["DOCUMENT_ROOT"] . "/PublicFunction.php");
 
 if(!isYibanLogin())
 {
-	exit(json_encode(ConstructReturnJSON("error",3003,"未登录到易班")));
+	exit(json_encode(ConstructReturnJSON("warning",null,"未登录到易班")));
 }
 
 if(empty($_POST["itemID"]))
@@ -60,7 +60,7 @@ if(!CheckItemID($dbc_submitUp,$itemID))
 
 if(isUpped($dbc_submitUp,$itemID,$_SESSION["userID"]))
 {
-	$rtn = ConstructReturnJSON("error",3004,"你已经赞过这条表白");
+	$rtn = ConstructReturnJSON("warning",null,"你已经赞过这条表白");
 }
 if(!isset($rtn))
 {

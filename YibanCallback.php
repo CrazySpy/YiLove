@@ -12,7 +12,8 @@ if(!isYibanLogin())
 	//		$_SESSION["realName"]	= toSQLSafeString($yiban->GetName());
 	$_SESSION["userID"]		  = toSQLSafeString($yiban->GetUserID());
 	$_SESSION["sex"]		  = toSQLSafeString($yiban->GetSex());
-	setcookie("nickName",$yiban->GetNickName(),time() + 7*60*60*24);
+	setcookie("nickName",urlencode($yiban->GetNickName()));
+	//setcookie("nickName",urlencode("成功"));
 
 	$dbc_setInfo = new SQL;
 	
